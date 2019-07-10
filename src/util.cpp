@@ -63,13 +63,13 @@ QDebug operator<<(QDebug dbg, const msgpack_object& obj)
 }
 
 typedef QPair<QString,QString> Param;
-QDebug operator<<(QDebug dbg, const NeovimQt::Function& f)
+QDebug operator<<(QDebug dbg, const NeovimQt::Function& function)
 {
-	dbg.space() << f.return_type << f.name << "(";
-	foreach(Param p, f.parameters) {
-		dbg.space() << p.first << ",";
+	dbg.space() << function.getReturnType() << function.getName() << "(";
+	for (const auto& param : function.getParameters()) {
+		dbg.space() << param.first << ",";
 	}
-	dbg.space() << ")" << "fails:" << f.can_fail;
+	dbg.space() << ")" << "fails:" << function.canFailBeforeReturn();
 	return dbg.maybeSpace();
 }
 

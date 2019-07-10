@@ -1,4 +1,5 @@
 #include <QAbstractSocket>
+#include <QPoint>
 #include <QTextCodec>
 #include <QSocketNotifier>
 

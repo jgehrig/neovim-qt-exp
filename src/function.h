@@ -1,47 +1,46 @@
-#ifndef NEOVIM_QT_FUNCTIONS
-#define NEOVIM_QT_FUNCTIONS
+#pragma once
 
-#include <QtGlobal>
-#include <QByteArray>
+#include <QObject>
 #include <QList>
 #include <QPair>
-#include <QDebug>
-#include <QStringList>
-#include <QPoint>
 
 namespace NeovimQt {
 
+/// Representation of a Neovim API function signature
 class Function {
 	Q_ENUMS(FunctionId)
+
 public:
+	Function(const QString& ret, const QString& name, QList<QPair<QString, QString>> params,
+		bool can_fail);
 
-	Function();
-	Function(const QString& ret, const QString& name, QList<QPair<QString,QString> > params, bool can_fail);
 	Function(const QString& ret, const QString& name, QList<QString> paramTypes, bool can_fail);
-	bool isValid() const;
+
+	/// Constructs a function from the Neovim provided RPC message
+	Function(const QVariant& function);
+
+	// FIXME Issue#1: This should be removed when the API is regenerated
+	static Function fromVariant(const QVariant& function);
+
 	bool operator==(const Function& other);
-	static Function fromVariant(const QVariant&);
-	static QList<QPair<QString,QString> > parseParameters(const QVariantList& obj);
 
-	/** Whether this function call fail without returning*/
-	bool can_fail;
-	/** Function return type */
-	QString return_type;
-	/** Function name */
-	QString name;
-	/** Function parameter types and name */
-	QList<QPair<QString,QString> > parameters;
+	bool isValid() const { return m_valid; }
 
-	QString signature() const;
-	/**
-	 * The static list **knowFunctions** holds a list of all the supported
-	 * signature. The list is populated at compile time from a code generator.
-	 */
-	const static QList<Function> knownFunctions;
+	bool canFailBeforeReturn() const { return m_can_fail; }
+
+	QString getReturnType() const { return m_return_type; }
+
+	QString getName() const { return m_name; }
+
+	QList<QPair<QString, QString>> getParameters() const { return m_parameters; }
+
 private:
-	bool m_valid;
+	bool m_valid{ false };
+	bool m_can_fail{ false };
+
+	QString m_return_type;
+	QString m_name;
+	QList<QPair<QString, QString>> m_parameters;
 };
 
-}
-
-#endif // NEOVIM_QT_FUNCTIONS
+} // namespace NeovimQt

@@ -121,13 +121,13 @@ static int bisearch(unsigned long ucs, const struct interval* table, int max)
  *      ISO 8859-1 and WGL4 characters, Unicode control characters,
  *      etc.) have a column width of 1.
  *
- * This implementation assumes that quint16 characters are encoded
+ * This implementation assumes that uint16_t characters are encoded
  * in ISO 10646.
  */
 
-int konsole_wcwidth(quint16 oucs)
+int konsole_wcwidth(uint16_t oucs)
 {
-    /* NOTE: It is not possible to compare quint16 with the new last four lines of characters,
+    /* NOTE: It is not possible to compare uint16_t with the new last four lines of characters,
      * therefore this cast is now necessary.
      */
     unsigned long ucs = static_cast<unsigned long>(oucs);

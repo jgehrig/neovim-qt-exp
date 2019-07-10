@@ -49,7 +49,7 @@ public:
 	Shell(NeovimConnector *nvim, ShellOptions opts, QWidget *parent=0);
 	~Shell();
 	QSize sizeIncrement() const;
-	static QColor color(qint64 color, const QColor& fallback=QColor());
+	static QColor color(int64_t color, const QColor& fallback=QColor());
 	static bool isBadMonospace(const QFont& f);
 	virtual QVariant inputMethodQuery(Qt::InputMethodQuery) const Q_DECL_OVERRIDE;
 	bool neovimBusy() const;
@@ -94,8 +94,8 @@ protected slots:
 	void fontError(const QString& msg);
 	void updateWindowId();
 	void updateClientInfo();
-	void handleGinitError(quint32 msgid, quint64 fun, const QVariant& err);
-	void handleShimError(quint32 msgid, quint64 fun, const QVariant& err);
+	void handleGinitError(uint32_t msgid, uint64_t fun, const QVariant& err);
+	void handleShimError(uint32_t msgid, uint64_t fun, const QVariant& err);
 
 protected:
 	void tooltip(const QString& text);
@@ -106,7 +106,7 @@ protected:
 	QPoint neovimCursorTopLeft() const;
 	QRect neovimCursorRect() const;
 	QRect neovimCursorRect(QPoint at) const;
-	void setNeovimCursor(quint64 col, quint64 row);
+	void setNeovimCursor(uint64_t col, uint64_t row);
 
 	virtual void resizeEvent(QResizeEvent *ev) Q_DECL_OVERRIDE;
 	virtual void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
@@ -188,7 +188,7 @@ class ShellRequestHandler: public QObject, public MsgpackRequestHandler
 	Q_OBJECT
 public:
 	ShellRequestHandler(Shell *parent);
-	virtual void handleRequest(MsgpackIODevice* dev, quint32 msgid, const QByteArray& method, const QVariantList& args);
+	virtual void handleRequest(MsgpackIODevice* dev, uint32_t msgid, const QByteArray& method, const QVariantList& args);
 };
 
 

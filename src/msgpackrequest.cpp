@@ -20,7 +20,7 @@ namespace NeovimQt {
  *
  * \see NeovimQt::MsgpackIODevice::msgId
  */
-MsgpackRequest::MsgpackRequest(quint32 id, MsgpackIODevice *dev, QObject *parent)
+MsgpackRequest::MsgpackRequest(uint32_t id, MsgpackIODevice *dev, QObject *parent)
 :QObject(parent), id(id), m_dev(dev), m_function(0)
 {
 	connect(&m_timer, &QTimer::timeout,
@@ -30,7 +30,7 @@ MsgpackRequest::MsgpackRequest(quint32 id, MsgpackIODevice *dev, QObject *parent
 /**
  * A function id used to match this request with a function
  */
-quint64 MsgpackRequest::function()
+uint64_t MsgpackRequest::function()
 {
 	return m_function;
 }
@@ -41,7 +41,7 @@ quint64 MsgpackRequest::function()
  * NeovimQt has auto-generated call handlers (e.g. in NeovimQt::NeovimConnector::api1)
  * that will be used to process the response
  */
-void MsgpackRequest::setFunction(quint64 f)
+void MsgpackRequest::setFunction(uint64_t f)
 {
 	m_function = f;
 }

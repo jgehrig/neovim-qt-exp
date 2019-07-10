@@ -20,13 +20,13 @@ class RequestHandler: public QObject, public MsgpackRequestHandler
 	Q_OBJECT
 public:
 	RequestHandler(QObject *parent=0):QObject(parent) {}
-	virtual void handleRequest(MsgpackIODevice* dev, quint32 msgid, const QByteArray& method, const QVariantList& params) {
+	virtual void handleRequest(MsgpackIODevice* dev, uint32_t msgid, const QByteArray& method, const QVariantList& params) {
 		dev->sendResponse(msgid, QVariant(), response);
 		emit receivedRequest(msgid, method, params);
 	}
 	QVariant response;
 signals:
-	void receivedRequest(quint32 msgid, const QByteArray&, const QVariantList&);
+	void receivedRequest(uint32_t msgid, const QByteArray&, const QVariantList&);
 
 };
 
@@ -118,7 +118,7 @@ private slots:
 
 		// Just to finish
 		auto req = one->startRequestUnchecked("testRequest", 0);
-		QSignalSpy gotResp(req, SIGNAL(error(quint32, quint64, QVariant)));
+		QSignalSpy gotResp(req, SIGNAL(error(uint32_t, uint64_t, QVariant)));
 		QVERIFY(gotResp.isValid());
 		QVERIFY2(SPYWAIT(gotResp), "By default all requests get an error");
 	}
@@ -145,7 +145,7 @@ private slots:
 	void request() {
 		auto req = one->startRequestUnchecked("testRequest", 0);
 		
-		QSignalSpy gotResp(req, SIGNAL(error(quint32, quint64, QVariant)));
+		QSignalSpy gotResp(req, SIGNAL(error(uint32_t, uint64_t, QVariant)));
 		QVERIFY(gotResp.isValid());
 
 		QVERIFY2(SPYWAIT(gotResp), "By default all requests get an error");
@@ -155,7 +155,7 @@ private slots:
 		handler->response = 42;
 		two->setRequestHandler(handler);
 
-		QSignalSpy gotReq(handler, SIGNAL(receivedRequest(quint32, QByteArray, QVariantList)));
+		QSignalSpy gotReq(handler, SIGNAL(receivedRequest(uint32_t, QByteArray, QVariantList)));
 		QVERIFY(gotReq.isValid());
 
 		auto req2 = one->startRequestUnchecked("testRequest2", 1);
@@ -168,7 +168,7 @@ private slots:
 		QCOMPARE(signal.at(1).toByteArray(), QByteArray("testRequest2"));
 		QCOMPARE(signal.at(2).toList().at(0).toByteArray(), QByteArray("hello"));
 
-		QSignalSpy gotResp2(req2, SIGNAL(finished(quint32, quint64, QVariant)));
+		QSignalSpy gotResp2(req2, SIGNAL(finished(uint32_t, uint64_t, QVariant)));
 		QVERIFY(gotResp2.isValid());
 		QVERIFY2(SPYWAIT(gotResp2), "RequestHandler sends back a response");
 	}
@@ -191,14 +191,14 @@ private slots:
 	}
 
 	void msgId() {
-		QCOMPARE(one->msgId(), (quint32)0);
-		QCOMPARE(one->msgId(), (quint32)1);
+		QCOMPARE(one->msgId(), (uint32_t)0);
+		QCOMPARE(one->msgId(), (uint32_t)1);
 		// Sending a request increases the id
 		one->startRequestUnchecked("testRequestMsgId", 0);
-		QCOMPARE(one->msgId(), (quint32)3);
+		QCOMPARE(one->msgId(), (uint32_t)3);
 		// Notifications dont
 		one->sendNotification("testNotificationMsgId", QVariantList());
-		QCOMPARE(one->msgId(), (quint32)4);
+		QCOMPARE(one->msgId(), (uint32_t)4);
 	}
 
 	void timeout() {
@@ -213,7 +213,7 @@ private slots:
 		MsgpackRequest *r = dev->startRequestUnchecked("testTimeout", 0);
 		r->setTimeout(3);
 
-		QSignalSpy timedOut(r, SIGNAL(timeout(quint32)));
+		QSignalSpy timedOut(r, SIGNAL(timeout(uint32_t)));
 		QVERIFY(timedOut.isValid());
 		QVERIFY(SPYWAIT(timedOut));
 		QVariantList params = timedOut.at(0);

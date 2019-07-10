@@ -12,8 +12,8 @@ public:
 	NeovimConnectorHelper(NeovimConnector *);
 
 public slots:
-	void handleMetadata(quint32, quint64, const QVariant& result);
-	void handleMetadataError(quint32 msgid, quint64,
+	void handleMetadata(uint32_t, uint64_t, const QVariant& result);
+	void handleMetadataError(uint32_t msgid, uint64_t,
 		const QVariant& errobj);
 private:
 	NeovimConnector *m_c;

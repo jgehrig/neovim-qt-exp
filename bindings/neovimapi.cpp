@@ -5,6 +5,10 @@
 #include "msgpackiodevice.h"
 #include "util.h"
 
+// FIXME Issue#1: All qint/quint types should be removed from this file. Vim search /qu\?int\d\+
+// There is a casting issue with QVariant that will need to be solved via a static_cast or change
+// to the called constructor.
+
 namespace NeovimQt {
 /* Unpack Neovim EXT types Window, Buffer Tabpage which are all
  * uint64_t see Neovim:msgpack_rpc_to_

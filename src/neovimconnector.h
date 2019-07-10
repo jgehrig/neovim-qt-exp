@@ -93,8 +93,8 @@ public:
 	/** Set a handler for msgpack rpc requests **/
 	void setRequestHandler(MsgpackRequestHandler *);
 
-	quint64 apiCompatibility();
-	quint64 apiLevel();
+	uint64_t apiCompatibility();
+	uint64_t apiLevel();
 
 signals:
 	/** Emitted when Neovim is ready @see ready */
@@ -127,9 +127,9 @@ private:
 	NeovimApi3 *m_api3;
 	NeovimApi4 *m_api4;
 	NeovimApi6 *m_api6;
-	quint64 m_channel;
-	quint64 m_api_compat;
-	quint64 m_api_supported;
+	uint64_t m_channel;
+	uint64_t m_api_compat;
+	uint64_t m_api_supported;
 
 	// Store connection arguments for reconnect()
 	NeovimConnectionType m_ctype;

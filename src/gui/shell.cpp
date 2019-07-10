@@ -340,11 +340,11 @@ void Shell::handlePut(const QVariantList& args)
  */
 void Shell::handleScroll(const QVariantList& args)
 {
-	if (!args.at(0).canConvert<qint64>()) {
+	if (!args.at(0).canConvert<int64_t>()) {
 		qWarning() << "Unexpected arguments for redraw:scroll" << args;
 		return;
 	}
-	qint64 count = args.at(0).toULongLong();
+	int64_t count = args.at(0).toULongLong();
 
 	// Keep track of the cursor position, repaint
 	// over its old position after the scroll
@@ -367,7 +367,7 @@ void Shell::handleSetScrollRegion(const QVariantList& opargs)
 		return;
 	}
 
-	qint64 top, bot, left, right;
+	int64_t top, bot, left, right;
 	top = opargs.at(0).toULongLong();
 	bot = opargs.at(1).toULongLong();
 	left = opargs.at(2).toULongLong();
@@ -380,39 +380,39 @@ void Shell::handleSetScrollRegion(const QVariantList& opargs)
 void Shell::handleRedraw(const QByteArray& name, const QVariantList& opargs)
 {
 	if (name == "update_fg") {
-		if (opargs.size() < 1 || !opargs.at(0).canConvert<quint64>()) {
+		if (opargs.size() < 1 || !opargs.at(0).canConvert<uint64_t>()) {
 			qWarning() << "Unexpected arguments for redraw:" << name << opargs;
 			return;
 		}
-		qint64 val = opargs.at(0).toLongLong();
+		int64_t val = opargs.at(0).toLongLong();
 		if (val != -1) {
 			setForeground(QRgb(val));
 		}
 		m_hg_foreground = foreground();
 	} else if (name == "update_bg") {
-		if (opargs.size() < 1 || !opargs.at(0).canConvert<quint64>()) {
+		if (opargs.size() < 1 || !opargs.at(0).canConvert<uint64_t>()) {
 			qWarning() << "Unexpected arguments for redraw:" << name << opargs;
 			return;
 		}
-		qint64 val = opargs.at(0).toLongLong();
+		int64_t val = opargs.at(0).toLongLong();
 		if (val != -1) {
 			setBackground(QRgb(val));
 		}
 		m_hg_background = background();
 		update();
 	} else if (name == "update_sp") {
-		if (opargs.size() < 1 || !opargs.at(0).canConvert<quint64>()) {
+		if (opargs.size() < 1 || !opargs.at(0).canConvert<uint64_t>()) {
 			qWarning() << "Unexpected arguments for redraw:" << name << opargs;
 			return;
 		}
-		qint64 val = opargs.at(0).toLongLong();
+		int64_t val = opargs.at(0).toLongLong();
 		if (val != -1) {
 			setSpecial(QRgb(val));
 		}
 		m_hg_special = special();
 	} else if (name == "resize") {
-		if (opargs.size() < 2 || !opargs.at(0).canConvert<quint64>() ||
-				!opargs.at(1).canConvert<quint64>()) {
+		if (opargs.size() < 2 || !opargs.at(0).canConvert<uint64_t>() ||
+				!opargs.at(1).canConvert<uint64_t>()) {
 			qWarning() << "Unexpected arguments for redraw:" << name << opargs;
 			return;
 		}
@@ -425,8 +425,8 @@ void Shell::handleRedraw(const QByteArray& name, const QVariantList& opargs)
 		clearRegion(m_cursor_pos.y(), m_cursor_pos.x(),
 				m_cursor_pos.y()+1, columns());
 	} else if (name == "cursor_goto"){
-		if (opargs.size() < 2 || !opargs.at(0).canConvert<quint64>() ||
-				!opargs.at(1).canConvert<quint64>()) {
+		if (opargs.size() < 2 || !opargs.at(0).canConvert<uint64_t>() ||
+				!opargs.at(1).canConvert<uint64_t>()) {
 			qWarning() << "Unexpected arguments for redraw:" << name << opargs;
 			return;
 		}
@@ -577,7 +577,7 @@ void Shell::handlePopupMenuSelect(const QVariantList& opargs)
 	m_pum.setSelectedIndex(opargs.at(0).toLongLong());
 }
 
-void Shell::setNeovimCursor(quint64 row, quint64 col)
+void Shell::setNeovimCursor(uint64_t row, uint64_t col)
 {
 	update(neovimCursorRect());
 	m_cursor_pos = QPoint(col, row);
@@ -1127,7 +1127,7 @@ void Shell::focusOutEvent(QFocusEvent *ev)
 	QWidget::focusOutEvent(ev);
 }
 
-QColor Shell::color(qint64 color, const QColor& fallback)
+QColor Shell::color(int64_t color, const QColor& fallback)
 {
 	if (color == -1) {
 		return fallback;
@@ -1319,7 +1319,7 @@ void Shell::bailoutIfinputBlocking()
 	if (api) {
 		auto req = api->nvim_get_mode();
 
-		connect(req, &MsgpackRequest::finished, [api](quint32 msgid, quint64 f, const QVariant& r) {
+		connect(req, &MsgpackRequest::finished, [api](uint32_t msgid, uint64_t f, const QVariant& r) {
 				auto map = r.toMap();
 				if (map.value("blocking", false) == true) {
 					api->nvim_input("<C-c>");
@@ -1334,7 +1334,7 @@ ShellRequestHandler::ShellRequestHandler(Shell *parent)
 }
 
 const char SELECTION_MIME_TYPE[] = "application/x-nvim-selection-type";
-void ShellRequestHandler::handleRequest(MsgpackIODevice* dev, quint32 msgid, const QByteArray& method, const QVariantList& args)
+void ShellRequestHandler::handleRequest(MsgpackIODevice* dev, uint32_t msgid, const QByteArray& method, const QVariantList& args)
 {
 	if (method == "Gui" && args.size() > 0) {
 		QString ctx = args.at(0).toString();
@@ -1408,14 +1408,14 @@ QString Shell::neovimErrorToString(const QVariant& err)
 	}
 }
 
-void Shell::handleGinitError(quint32 msgid, quint64 fun, const QVariant& err)
+void Shell::handleGinitError(uint32_t msgid, uint64_t fun, const QVariant& err)
 {
 	qDebug() << "ginit.vim error " << err;
 	auto msg = neovimErrorToString(err);
 	m_nvim->api0()->vim_report_error("ginit.vim error: " + msg.toUtf8());
 }
 
-void Shell::handleShimError(quint32 msgid, quint64 fun, const QVariant& err)
+void Shell::handleShimError(uint32_t msgid, uint64_t fun, const QVariant& err)
 {
 	qDebug() << "GUI shim error " << err;
 }

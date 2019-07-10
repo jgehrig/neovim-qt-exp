@@ -443,12 +443,12 @@ NeovimConnector* NeovimConnector::reconnect()
 }
 
 /** The minimum API level supported by this instance */
-quint64 NeovimConnector::apiCompatibility()
+uint64_t NeovimConnector::apiCompatibility()
 {
 	return m_api_compat;
 }
 /** The maximum API level supported by this instance */
-quint64 NeovimConnector::apiLevel()
+uint64_t NeovimConnector::apiLevel()
 {
 	return m_api_supported;
 }

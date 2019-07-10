@@ -107,7 +107,7 @@ private slots:
 		QVERIFY(s->neovimAttached());
 
 		auto req = c->api0()->vim_command_output(c->encode("echo g:test_gviminit"));
-		QSignalSpy cmd(req, SIGNAL(finished(quint32, quint64, QVariant)));
+		QSignalSpy cmd(req, SIGNAL(finished(uint32_t, uint64_t, QVariant)));
 		QVERIFY(cmd.isValid());
 		QVERIFY(SPYWAIT(cmd));
 		qDebug() << cmd;

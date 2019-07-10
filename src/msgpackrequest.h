@@ -10,22 +10,22 @@ class MsgpackIODevice;
 class MsgpackRequest: public QObject {
 	Q_OBJECT
 public:
-	MsgpackRequest(quint32 id, MsgpackIODevice *dev, QObject *parent=0);
-	void setFunction(quint64);
-	quint64 function();
+	MsgpackRequest(uint32_t id, MsgpackIODevice *dev, QObject *parent=0);
+	void setFunction(uint64_t);
+	uint64_t function();
 	void setTimeout(int msec);
 	/** The identifier for this Msgpack request */
-	const quint32 id;
+	const uint32_t id;
 signals:
-	void finished(quint32 msgid, quint64 fun, const QVariant& resp);
-	void error(quint32 msgid, quint64 fun, const QVariant& err);
-	void timeout(quint32 id);
+	void finished(uint32_t msgid, uint64_t fun, const QVariant& resp);
+	void error(uint32_t msgid, uint64_t fun, const QVariant& err);
+	void timeout(uint32_t id);
 protected slots:
 	void requestTimeout();
 
 private:
 	MsgpackIODevice *m_dev;
-	quint64 m_function;
+	uint64_t m_function;
 	QTimer m_timer;
 };
 } // Namespace

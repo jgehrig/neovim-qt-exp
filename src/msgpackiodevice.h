@@ -37,8 +37,8 @@ public:
 	QByteArray encoding() const;
 	bool setEncoding(const QByteArray&);
 
-	quint32 msgId();
-	MsgpackRequest* startRequestUnchecked(const QString& method, quint32 argcount);
+	uint32_t msgId();
+	MsgpackRequest* startRequestUnchecked(const QString& method, uint32_t argcount);
 
 	void send(int64_t);
 	void send(const QVariant&);
@@ -63,10 +63,10 @@ public:
 	void setRequestHandler(MsgpackRequestHandler *);
 
 	/** Typedef for msgpack-to-Qvariant decoder @see registerExtType */
-	typedef QVariant (*msgpackExtDecoder)(MsgpackIODevice*, const char* data, quint32 size);
+	typedef QVariant (*msgpackExtDecoder)(MsgpackIODevice*, const char* data, uint32_t size);
 	void registerExtType(int8_t type, msgpackExtDecoder);
 
-	QList<quint32> pendingRequests() const;
+	QList<uint32_t> pendingRequests() const;
 signals:
 	void error(MsgpackError);
 	/** A notification with the given name and arguments was received */
@@ -95,18 +95,18 @@ protected slots:
 	void dataAvailableStdin(const QByteArray&);
 	void dataAvailableFd(int fd);
 
-	void requestTimeout(quint32 id);
+	void requestTimeout(uint32_t id);
 
 private:
 	static int msgpack_write_to_stdout(void* data, const char* buf, unsigned long int len);
 	static int msgpack_write_to_dev(void* data, const char* buf, unsigned long int len);
 
-	quint32 m_reqid;
+	uint32_t m_reqid;
 	QIODevice *m_dev;
 	QTextCodec *m_encoding;
 	msgpack_packer m_pk;
 	msgpack_unpacker m_uk;
-	QHash<quint32, MsgpackRequest*> m_requests;
+	QHash<uint32_t, MsgpackRequest*> m_requests;
 	MsgpackRequestHandler *m_reqHandler;
 	QHash<int8_t, msgpackExtDecoder> m_extTypes;
 
@@ -116,7 +116,7 @@ private:
 
 class MsgpackRequestHandler {
 public:
-	virtual void handleRequest(MsgpackIODevice*, quint32 msgid, const QByteArray&, const QVariantList&)=0;
+	virtual void handleRequest(MsgpackIODevice*, uint32_t msgid, const QByteArray&, const QVariantList&)=0;
 };
 
 } // Namespace NeovimQt

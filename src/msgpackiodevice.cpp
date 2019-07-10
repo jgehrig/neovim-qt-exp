@@ -111,7 +111,7 @@ bool MsgpackIODevice::setEncoding(const QByteArray& name)
 int MsgpackIODevice::msgpack_write_to_stdout(void* data, const char* buf, unsigned long int len)
 {
 	MsgpackIODevice *c = static_cast<MsgpackIODevice*>(data);
-	qint64 bytes = write(1, buf, len);
+	int64_t bytes = write(1, buf, len);
 	if (bytes == -1) {
 		c->setError(InvalidDevice, tr("Error writing to device"));
 	}
@@ -121,7 +121,7 @@ int MsgpackIODevice::msgpack_write_to_stdout(void* data, const char* buf, unsign
 int MsgpackIODevice::msgpack_write_to_dev(void* data, const char* buf, unsigned long int len)
 {
 	MsgpackIODevice *c = static_cast<MsgpackIODevice*>(data);
-	qint64 bytes = c->m_dev->write(buf, len);
+	int64_t bytes = c->m_dev->write(buf, len);
 	if (bytes == -1) {
 		c->setError(InvalidDevice, tr("Error writing to device"));
 	}
@@ -135,7 +135,7 @@ int MsgpackIODevice::msgpack_write_to_dev(void* data, const char* buf, unsigned 
  */
 void MsgpackIODevice::dataAvailableStdin(const QByteArray& data)
 {
-	if ( (quint64)data.length() > msgpack_unpacker_buffer_capacity(&m_uk)) {
+	if ( (uint64_t)data.length() > msgpack_unpacker_buffer_capacity(&m_uk)) {
 		setError(InvalidDevice, tr("Error when reading from stdin, BUG(buffered data exceeds capaciy)"));
 		return;
 	} else if ( data.length() > 0 ) {
@@ -163,7 +163,7 @@ void MsgpackIODevice::dataAvailableFd(int fd)
 		}
 	}
 
-	qint64 bytes = read(fd, msgpack_unpacker_buffer(&m_uk),
+	int64_t bytes = read(fd, msgpack_unpacker_buffer(&m_uk),
 			msgpack_unpacker_buffer_capacity(&m_uk));
 	if (bytes > 0) {
 		msgpack_unpacker_buffer_consumed(&m_uk, bytes);
@@ -184,7 +184,7 @@ void MsgpackIODevice::dataAvailableFd(int fd)
  */
 void MsgpackIODevice::dataAvailable()
 {
-	qint64 read = 1;
+	int64_t read = 1;
 	while (read > 0) {
 		if ( msgpack_unpacker_buffer_capacity(&m_uk) == 0 ) {
 			if ( !msgpack_unpacker_reserve_buffer(&m_uk, 8192 ) ) {
@@ -405,7 +405,7 @@ err:
 }
 
 /** Return list of pending request ids */
-QList<quint32> MsgpackIODevice::pendingRequests() const
+QList<uint32_t> MsgpackIODevice::pendingRequests() const
 {
 	return m_requests.keys();
 }
@@ -462,9 +462,9 @@ QString MsgpackIODevice::errorString() const
  * Returns a MsgpackRequest object. You can connect to
  * its finished() SIGNAL to handle the response
  */
-MsgpackRequest* MsgpackIODevice::startRequestUnchecked(const QString& method, quint32 argcount)
+MsgpackRequest* MsgpackIODevice::startRequestUnchecked(const QString& method, uint32_t argcount)
 {
-	quint32 msgid = msgId();
+	uint32_t msgid = msgId();
 	// [type(0), msgid, method, args]
 	msgpack_pack_array(&m_pk, 4);
 	msgpack_pack_int(&m_pk, 0);
@@ -484,7 +484,7 @@ MsgpackRequest* MsgpackIODevice::startRequestUnchecked(const QString& method, qu
 /**
  * Request timed out, discard it
  */
-void MsgpackIODevice::requestTimeout(quint32 id)
+void MsgpackIODevice::requestTimeout(uint32_t id)
 {
 	if (m_requests.contains(id)) {
 		MsgpackRequest *r = m_requests.take(id);
@@ -496,7 +496,7 @@ void MsgpackIODevice::requestTimeout(quint32 id)
 /**
  * Returns a new msgid that can be used for a msg
  */
-quint32 MsgpackIODevice::msgId()
+uint32_t MsgpackIODevice::msgId()
 {
 	return this->m_reqid++;
 }
@@ -621,10 +621,10 @@ bool MsgpackIODevice::decodeMsgpack(const msgpack_object& in, QVariant& out)
 		out = in.via.boolean;
 		break;
 	case MSGPACK_OBJECT_NEGATIVE_INTEGER:
-		out = QVariant((qint64)in.via.i64);
+		out = QVariant(static_cast<quint64>(in.via.i64));
 		break;
 	case MSGPACK_OBJECT_POSITIVE_INTEGER:
-		out = QVariant((quint64)in.via.u64);
+		out = QVariant(static_cast<quint64>(in.via.u64));
 		break;
 	case MSGPACK_OBJECT_FLOAT:
 		out = in.via.f64;

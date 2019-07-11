@@ -7,9 +7,11 @@ jobs:
   - job: Linux_Debug
     pool:
       vmImage: 'ubuntu-latest'
-    steps: |
-      sudo apt install -y qt5-default
-      sudo apt install -y neovim
-      mkdir build
-      /usr/local/bin/cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
-    displayName: Linux Debug Build
+    steps:
+      - script: |
+        sudo apt install -y qt5-default
+        sudo apt install -y neovim
+        mkdir build
+        /usr/local/bin/cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
+        ninja
+        displayName: Linux Debug Build

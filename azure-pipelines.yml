@@ -1,0 +1,15 @@
+# Neovim-Qt Experiments
+# Azure Pipeline Continuous Integration
+#
+# Based on: https://github.com/microsoft/cpprestsdk/blob/master/azure-pipelines.yml
+
+jobs:
+  - job: Linux_Debug
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps: |
+      sudo apt-get install qt5-default
+      sudo apt-get install neovim
+      mkdir build
+      /usr/local/bin/cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
+    displayName: Linux Debug Build

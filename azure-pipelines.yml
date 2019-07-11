@@ -8,8 +8,8 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     steps: |
-      sudo apt-get install qt5-default
-      sudo apt-get install neovim
+      sudo apt install -y qt5-default
+      sudo apt install -y neovim
       mkdir build
       /usr/local/bin/cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
     displayName: Linux Debug Build

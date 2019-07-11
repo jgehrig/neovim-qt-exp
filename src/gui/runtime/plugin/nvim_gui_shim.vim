@@ -1,6 +1,6 @@
 " A Neovim plugin that implements GUI helper commands
 if !has('nvim') || exists('g:GuiLoaded')
-  finish
+	finish
 endif
 let g:GuiLoaded = 1
 
@@ -18,71 +18,71 @@ endfunction
 
 " Close the GUI
 function! GuiClose() abort
-  call rpcnotify(0, 'Gui', 'Close')
+	call rpcnotify(0, 'Gui', 'Close')
 endfunction
 
 " Notify the GUI when exiting Neovim
 augroup nvim_gui_shim
-  autocmd!
-  autocmd VimLeave * call GuiClose()
+	autocmd!
+	autocmd VimLeave * call GuiClose()
 augroup END
 
 " A replacement for foreground()
 function! GuiForeground() abort
-  call rpcnotify(0, 'Gui', 'Foreground')
+	call rpcnotify(0, 'Gui', 'Foreground')
 endfunction
 
 " Set maximized state for GUI window (1 is enabled, 0 disabled)
 function! GuiWindowMaximized(enabled) abort
-  call rpcnotify(0, 'Gui', 'WindowMaximized', a:enabled)
+	call rpcnotify(0, 'Gui', 'WindowMaximized', a:enabled)
 endfunction
 
 " Set fullscreen state for GUI window (1 is enabled, 0 disabled)
 function! GuiWindowFullScreen(enabled) abort
-  call rpcnotify(0, 'Gui', 'WindowFullScreen', a:enabled)
+	call rpcnotify(0, 'Gui', 'WindowFullScreen', a:enabled)
 endfunction
 
 " Set GUI font
 function! GuiFont(fname, ...) abort
-  let force = get(a:000, 0, 0)
-  call rpcnotify(0, 'Gui', 'Font', a:fname, force)
+	let force = get(a:000, 0, 0)
+	call rpcnotify(0, 'Gui', 'Font', a:fname, force)
 endfunction
 
 " Set additional linespace
 function! GuiLinespace(height) abort
-  call rpcnotify(0, 'Gui', 'Linespace', a:height)
+	call rpcnotify(0, 'Gui', 'Linespace', a:height)
 endfunction
 
 " Configure mouse hide behaviour (1 is enabled, 0 disabled)
 function! GuiMousehide(enabled) abort
-  call rpcnotify(0, 'Gui', 'Mousehide', a:enabled)
+	call rpcnotify(0, 'Gui', 'Mousehide', a:enabled)
 endfunction
 
 " The GuiFont command. For compatibility there is also Guifont
 function s:GuiFontCommand(fname, bang) abort
-  if a:fname ==# ''
-    if exists('g:GuiFont')
-      echo g:GuiFont
-    else
-      echo 'No GuiFont is set'
-    endif
-  else
-    call GuiFont(a:fname, a:bang ==# '!')
-  endif
+	if a:fname ==# ''
+		if exists('g:GuiFont')
+			echo g:GuiFont
+		else
+			echo 'No GuiFont is set'
+		endif
+	else
+		call GuiFont(a:fname, a:bang ==# '!')
+	endif
 endfunction
 command! -nargs=? -bang Guifont call s:GuiFontCommand("<args>", "<bang>")
 command! -nargs=? -bang GuiFont call s:GuiFontCommand("<args>", "<bang>")
 
 function s:GuiLinespaceCommand(height) abort
-  if a:height ==# ''
-    if exists('g:GuiLinespace')
-      echo g:GuiLinespace
-    else
-      echo 'No GuiLinespace is set'
-    endif
-  else
-    call GuiLinespace(a:height)
-  endif
+	if a:height ==# ''
+		if exists('g:GuiLinespace')
+			echo g:GuiLinespace
+		else
+			echo 'No GuiLinespace is set'
+		endif
+	else
+		call GuiLinespace(a:height)
+	endif
 endfunction
 command! -nargs=? GuiLinespace call s:GuiLinespaceCommand("<args>")
 
@@ -114,9 +114,9 @@ function GuiName()
 
 	" Use the last UI in the list
 	let ui_chan = s:get_last_ui_chan()
-  if (ui_chan == -1)
-    return
-  endif
+	if (ui_chan == -1)
+		return
+	endif
 
 	let info = nvim_get_chan_info(ui_chan)
 	return get(info.client, 'name', '')
@@ -153,17 +153,17 @@ function GuiClipboard()
 	endif
 	let ui_chan = uis[-1].chan
 
-    let g:clipboard = {
-          \   'name': 'custom',
-          \   'copy': {
-          \      '+': {lines, regtype -> rpcnotify(ui_chan, 'Gui', 'SetClipboard', lines, regtype, '+')},
-          \      '*': {lines, regtype -> rpcnotify(ui_chan, 'Gui', 'SetClipboard', lines, regtype, '*')},
-          \    },
-          \   'paste': {
-          \      '+': {-> rpcrequest(ui_chan, 'Gui', 'GetClipboard', '+')},
-          \      '*': {-> rpcrequest(ui_chan, 'Gui', 'GetClipboard', '*')},
-          \   },
-          \ }
+	let g:clipboard = {
+		\   'name': 'custom',
+		\   'copy': {
+		\      '+': {lines, regtype -> rpcnotify(ui_chan, 'Gui', 'SetClipboard', lines, regtype, '+')},
+		\      '*': {lines, regtype -> rpcnotify(ui_chan, 'Gui', 'SetClipboard', lines, regtype, '*')},
+		\    },
+		\   'paste': {
+		\      '+': {-> rpcrequest(ui_chan, 'Gui', 'GetClipboard', '+')},
+		\      '*': {-> rpcrequest(ui_chan, 'Gui', 'GetClipboard', '*')},
+		\   },
+		\ }
 
 	" When the clipboard provider is sourced it short circuits if it cannot
 	" find a working clipboard - this behaviour is used internally by nvim to
@@ -180,15 +180,15 @@ endfunction
 "        UIs. Being able to select a "correct" UI would be an improvement.
 "        But what is "the correct UI" ?
 augroup guiDirEvents
-    autocmd!
-    autocmd DirChanged * call rpcnotify(0, 'Dir', getcwd())
-    autocmd WinEnter * call rpcnotify(0, 'Dir', getcwd())
+	autocmd!
+	autocmd DirChanged * call rpcnotify(0, 'Dir', getcwd())
+	autocmd WinEnter * call rpcnotify(0, 'Dir', getcwd())
 augroup END
 
 
 " Notifies the TreeView widget of a Show or Hide event
 function! s:TreeViewShowHide(show)
-    call rpcnotify(0, 'Gui', 'TreeView', 'ShowHide', a:show)
+	call rpcnotify(0, 'Gui', 'TreeView', 'ShowHide', a:show)
 endfunction
 
 command! GuiTreeviewShow call <SID>TreeViewShowHide(1)
@@ -200,7 +200,7 @@ anoremenu <script> Gui.Treeview.Hide :call <SID>TreeViewShowHide(0)
 
 " Notifies the TreeView widget of a Toggle event
 function! s:TreeViewToggle()
-    call rpcnotify(0, 'Gui', 'TreeView', 'Toggle')
+	call rpcnotify(0, 'Gui', 'TreeView', 'Toggle')
 endfunction
 
 command! GuiTreeviewToggle call <SID>TreeViewToggle()

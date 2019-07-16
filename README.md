@@ -1,5 +1,6 @@
-
 Neovim client library and GUI, in Qt5.
+
+[![Build Status](https://dev.azure.com/jgehrig/neovim-qt-exp/_apis/build/status/jgehrig.neovim-qt-exp?branchName=master)](https://dev.azure.com/jgehrig/neovim-qt-exp/_build/latest?definitionId=2&branchName=master)
 
 ## Requirements
 
